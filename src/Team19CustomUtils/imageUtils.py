@@ -1,5 +1,5 @@
 import math as m
-from PIL import Image
+from PIL import Image, ImageOps
 import numpy as np
 
 def a_reduce_dim(input):
@@ -61,32 +61,75 @@ def rgb_to_grayscale (img_array):
 
     return gray_values
 
-def a_sum(input):
-    """
-    calculates the sum of an array
-    Args:
-        input: a one-dimensional array
-    Returns: 
-        sum: the sum of all values in the array
+class image:
+    in_path: str
+    img_data: list
+    ch_data: list
 
-    Dependencies: 
-        None
-    """
-    sum = 0
-    for i in range (0, len(input)):
-            sum += input[i]
+    zero_width: int
+    zero_height: int
 
-    return sum
+    TGT_WIDTH = 100
+    TGT_HEIGHT = 100
+    size = (TGT_WIDTH, TGT_HEIGHT)
 
-def a_mean(input):
-    """
-    calculates the mean of an array
-    Args:
-        input: a one-dimensional array
-    Returns: 
-        the mean of the one-dimensional array
+    def set_in_path(self, path:str):
+        """
+        sets the path for a new image
+        Args:
+            path <string>:  the path to the image
+        Returns: 
+            void
+        Dependencies: 
+            None
+        """
+        self.in_path = path
 
-    Dependencies: 
-        None
-    """
-    return ( a_sum(input) / len(input) )
+    def set_tar_size(self, width, height):
+        """
+        sets the output target size to map the image to
+        Args:
+            width <int>: the desired output width
+            height <int>: the desired output height
+        Returns: 
+            void
+        Dependencies: 
+            None
+        """
+        self.TGT_WIDTH = width
+        self.TGT_HEIGHT = height
+        self.size = (width, height)
+
+    def new_image(self):
+        """
+        initializes a new image class. a path must be set but target size will default to 100 with no call
+        Args:
+            none
+        Returns: 
+            void
+        Dependencies: 
+            None
+        """
+        t = Image.open(self.in_path)
+        (self.zero_width,self.zero_height) = (t.width // 2, t.height // 2)
+        t2 = ImageOps.pad(t, self.size, color = '#000')
+        self.img_data = np.asarray(t2, dtype= np.uint8)
+        self.img_data = self.img_data.copy() 
+    
+    def get_rgb_data(self):
+        for i in range(0, 3):
+            self.ch_data = np.zeros( (3, len(self.img_data), len(self.img_data[0]) ) )
+            self.ch_data[i] = self.img_data[:,:,i] / 255
+            normalize(self.ch_data[i])
+            self.img_data[:,:,i] = self.ch_data[i] * 255
+
+    
+    def get_grayscale_data(self):
+        self.ch_data = self.img_data / 255
+        normalize(self.ch_data)
+        self.img_data = self.ch_data * 255
+    
+    def show_image(self):
+        img_out = Image.fromarray(self.img_data)
+        img_out.show()
+    
