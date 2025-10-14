@@ -1,4 +1,4 @@
-# Example Package
+# ENGR 133 Team 19 Custom Utilities Library
 
 This is a package containing some customized code that was used previously in group and individual projects across engr133 and deemed to be useful enough to reserve a package
 
