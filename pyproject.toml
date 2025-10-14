@@ -1,6 +1,6 @@
 [project]
 name = "Team_19_Custom_Utils_Lib"
-version = "0.0.4"
+version = "0.0.8"
 authors = [
   { name="Mark Sheng", email="marksheng2020@example.com" },
 ]
