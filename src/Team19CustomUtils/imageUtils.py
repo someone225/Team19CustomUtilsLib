@@ -1,16 +1,6 @@
 import math as m
 from PIL import Image, ImageOps
 import numpy as np
-
-def a_reduce_dim(input):
-    output = [0] *( len(input) * len(input[0]) )
-    k = 0
-    for i in range(0, len(input)):
-        for j in range(0, len(input[0])):
-            output[k] = input[i][j]
-            k += 1
-    return output
-
 def normalize(ch_input):
     """
     normalizes an input array according to the rgb linearlization algorithm
@@ -71,7 +61,8 @@ class image:
 
     TGT_WIDTH = 100
     TGT_HEIGHT = 100
-    size = (TGT_WIDTH, TGT_HEIGHT)
+    size: tuple
+    set_target_size_called = False
 
     def set_in_path(self, path:str):
         """
@@ -98,7 +89,7 @@ class image:
         """
         self.TGT_WIDTH = width
         self.TGT_HEIGHT = height
-        self.size = (width, height)
+        self.set_target_size_called = True
 
     def new_image(self):
         """
@@ -110,11 +101,19 @@ class image:
         Dependencies: 
             None
         """
+
         t = Image.open(self.in_path)
         (self.zero_width,self.zero_height) = (t.width // 2, t.height // 2)
+        if(self.set_target_size_called == False):
+            self.TGT_WIDTH = self.zero_width
+            self.TGT_HEIGHT = self.zero_height
+
+        self.size = (self.TGT_WIDTH, self.TGT_HEIGHT)
         t2 = ImageOps.pad(t, self.size, color = '#000')
         self.img_data = np.asarray(t2, dtype= np.uint8)
         self.img_data = self.img_data.copy() 
+
+        
     
     def get_rgb_data(self):
         for i in range(0, 3):
