@@ -52,3 +52,18 @@ def a_mean(input):
         None
     """
     return ( a_sum(input) / len(input) )
+
+def transpose_matrix(input: list):
+    """
+    transposes an input matrix
+    args:
+        input (2d arr): input matrix which will be transposed
+    returns:
+        m_transposed (2d arr): transposition of input matrix
+    """
+    m_transposed = input.copy()
+    for i in range(0, len(input)):
+        for j in range(0, len(input[0])):
+            m_transposed[i][j] = input[j][i]
+    
+    return m_transposed
