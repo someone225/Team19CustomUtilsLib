@@ -1,3 +1,5 @@
+import numpy as np
+
 def get_ratio(num1, num2):
     """
     calculates the ratio between two numbers
@@ -67,3 +69,41 @@ def transpose_matrix(input: list):
             m_transposed[i][j] = input[j][i]
     
     return m_transposed
+
+def a_reduceDims(input:list):
+    output = [0] * ( len(input) * len(input[0]) )
+    k = 0
+    for i in range(0, len(input)):
+        for j in range(0, len(input[0])):
+            output[k] = input[i][j]
+            k += 1
+    
+    return output
+            
+def a_snip(input:list):
+    l = 0
+    for i in range(0, len(input)):
+        if(input[i] != 0):
+            l += 1
+
+    output = [0] * l
+    for i in range(0, output):
+        output[i] = input[i]
+
+    return output
+
+
+def contains(input:list, target:int):
+    dims = np.ndims(input)
+    if dims > 1:
+        for i in range(dims, 1, - 1):
+            input = a_reduceDims(input)
+    
+    for i in range(0, len(input)):
+        if(input[i] == target):
+            return 1
+        
+    return 0
+
+        
+    
