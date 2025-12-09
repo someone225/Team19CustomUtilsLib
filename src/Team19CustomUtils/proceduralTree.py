@@ -1,5 +1,5 @@
 import numpy as np
-import generalUtils
+
 
 class tree:
     #the goal of procedural generation is to conserve computer resources and generate the tree only as required.
@@ -25,19 +25,41 @@ class tree:
     
     
 
-    def setSeed(self, depth:int, branchPopulation:int, divergence:int, populator:list) -> None:
-        #depth:  bounding range for random depth generation
-        #branchPopulation:  bounding range for random branch population
-        #divergence:  bounding ranges for branch count
+    def setSeed(self, depth:int, branchPopulation:int, divergence:int, populator:list, random: bool) -> None:
+        """
+        scans for a number input (int or float)
+        args:
+            depth (int): specified depth in which procedural generation will stop
+            branchPopulation (int): the list population on each node
+            divergence (int): the amount of future nodes that generate from the current node
+            populator (list): container of values to fill each node
+            random (bool): toggles random mode (uses user specifications as a ceiling for random generation instead of fixed values)
 
-        self.seed[0] = depth
-        self.seed[1] = branchPopulation
-        self.seed[2] = divergence
-        self.presentBuffer = [0] * self.seed[1]
-        self.lookAheadBuffer = np.zeros(divergence, branchPopulation)
-        self.populator = populator
+        returns:
+            ValueError if 'random' argument has not been assigned correctly
+            void otherwise
 
-        self.seeded = 1
+    """
+        if random == False:
+            self.seed[0] = depth
+            self.seed[1] = branchPopulation
+            self.seed[2] = divergence
+            self.presentBuffer = [0] * self.seed[1]
+            self.lookAheadBuffer = np.zeros( (self.seed[2], self.seed[1] ), dtype=int)
+            self.populator = populator
+
+            self.seeded = 1
+        elif random == True:
+            self.seed[0] = np.random.randint(1, depth)
+            self.seed[1] = np.random.randint(1, branchPopulation)
+            self.seed[2] = np.random.randint(1, divergence)
+            self.presentBuffer = [0] * self.seed[1]
+            self.lookAheadBuffer = np.zeros( (self.seed[2], self.seed[1] ), dtype=int)
+            self.populator = populator
+
+            self.seeded = 1
+        else:
+            return ValueError("Invalid assignment of 'random' argument ")
 
     def populateBuffers(self):
         match self.seeded:
@@ -45,8 +67,8 @@ class tree:
                 for i in range(0, len(self.presentBuffer)):
                     #fills the present buffer with random numbers from the populator list
                     self.presentBuffer[i] = self.populator[np.random.randint(0, len(self.populator))]
-                    self.populateFutureBuffer()
-                    return None
+                self.populateFutureBuffer()
+                return None
             case _:
                 return RuntimeError("the specified tree is currently unseeded")
 
@@ -86,12 +108,10 @@ class tree:
 
 
 
-
     
         
 
     
 
             
-        
 

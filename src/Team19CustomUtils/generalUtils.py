@@ -93,8 +93,18 @@ def a_snip(input:list):
     return output
 
 
-def contains(input:list, target:int):
-    dims = np.ndims(input)
+def contains(input:list, target):
+    """
+    scans a list for presence of a target
+    args:
+        input (list): the list to check for the target
+        target (dynamic): the target that the algorithm is checking for
+
+    returns:
+        1 - input list contains target
+        0 - input list does not contain target
+    """
+    dims = np.ndim(input)
     if dims > 1:
         for i in range(dims, 1, - 1):
             input = a_reduceDims(input)
@@ -105,5 +115,68 @@ def contains(input:list, target:int):
         
     return 0
 
+def scanNumericalInput(mode:str, outputContainer, ranges:list, message: str):
+    """
+    scans for a number input (int or float)
+    args:
+        mode (string): 'range' - scans for valid inputs within specified range | 'match' - scans for valid inputs matching specified values
+        outputContainer (dynamic): variable to store input. this variable's type is also used to predefine the expected type
+        ranges (1d list): valid inputs 
+        message (string): the prompt to display to the user
+
+    returns:
+        outputContainer (dynamic): valid user input
+    """
+
+    outputContainer = getI(outputContainer, message)
+    match mode:
+        case 'range':
+            minVal = min(ranges)
+            maxVal = max(ranges)
+
+            while (outputContainer < minVal) or (outputContainer > maxVal):
+                print('Invalid input range, please try again.')
+                print('Valid inputs range from', minVal, 'to', maxVal )
+
+
+                outputContainer = getI(outputContainer, message)
+        case 'match': 
+            while contains(ranges, outputContainer) == 0:
+                
+                print('Invalid input range, please try again.')
+
+
+                outputContainer = getI(outputContainer, message)
+        
+        case _:
+            return ValueError("unspecified or invalid mode declaration")
+    return outputContainer
+            
+            
+
+
+    
+        
+def getI(outputContainer, message: str):
+#subfunction of scanNumericalInput
+    while True:
+        print(message, end = '')
+        try:
+            if isinstance(outputContainer, int) == True:
+                outputContainer = int(input(''))
+            elif isinstance(outputContainer, float) == True:
+                outputContainer = float(input(''))
+            else:
+                return TypeError('Input container is not of int or float type')
+            break
+
+        except ValueError:
+            print("Invalid input type, please try again")
+
+
+    return outputContainer
+
+
+    
         
     
