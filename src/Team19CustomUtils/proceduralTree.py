@@ -26,6 +26,9 @@ class tree:
     
 
     def setSeed(self, depth:int, branchPopulation:int, divergence:int, populator:list, random: bool) -> None:
+        #fuck AI we ball with procedural generation
+        #bringing you unpredictable results since 2004
+
         """
         scans for a number input (int or float)
         args:
